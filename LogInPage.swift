@@ -15,7 +15,8 @@
 //
 
 import SwiftUI
-struct ContentView: View {
+struct Login: View {
+    // Declaring Variable names for future use
     @State private var Username = ""
     @State private var Password = ""
     @State private var wrongUsername = 0
@@ -25,6 +26,8 @@ struct ContentView: View {
     var body: some View{
         NavigationView{
             
+            
+            // Creating the inital design that you can see in the background
             ZStack{
                 Color
                     .white.opacity(0.10)
@@ -36,6 +39,8 @@ struct ContentView: View {
                 Circle()
                     .scale(1.3)
                     .foregroundColor(.blue.opacity(0.15))
+                
+                // Creating the buttons and text fields that are going to be used an an input and buttons for login and sign up
                 VStack{
                     Text("Login")
                         .font(.largeTitle)
@@ -64,6 +69,16 @@ struct ContentView: View {
                     .background(Color.blue)
                     .cornerRadius(10)
                     
+                 
+                    
+                    // Current Work - RC 06 19
+                    Button("Sign up"){
+                    }
+                    .foregroundColor(.white)
+                    .frame(width: 300, height: 50)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                    
                     
                     
                     // Temp
@@ -73,14 +88,8 @@ struct ContentView: View {
                     
                         
                         
-                        
-                        Button("Sign up"){
-                            
-                        }
-                        .foregroundColor(.white)
-                        .frame(width: 300, height: 50)
-                        .background(Color.blue)
-                        .cornerRadius(10)
+                        // need to use a stackview for the sign up page then create a local database for the username and password - todo
+            
                     }
                 }
             }
@@ -119,9 +128,10 @@ struct ContentView: View {
     
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
-            ContentView()
+            Login()
         }
     }
+
     
 
 
