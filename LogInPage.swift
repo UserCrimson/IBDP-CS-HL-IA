@@ -69,18 +69,22 @@ struct Login: View {
                     .background(Color.blue)
                     .cornerRadius(10)
                     
-                 
+                    
                     
                     // Current Work - RC 06 19
-                    Button("Sign up"){
+                    NavigationLink{
+                        Signup()
+                    }label:{
+                        HStack(spacing: 3){
+                            Text("Dont have an account")
+                            Text("Sign up")
+                                .fontWeight(.bold)
+                        }
+                        .font(.system(size: 20))
                     }
-                    .foregroundColor(.white)
-                    .frame(width: 300, height: 50)
-                    .background(Color.blue)
-                    .cornerRadius(10)
-                    
-                    
-                    
+            
+            
+
                     // Temp
                     NavigationLink(destination: Text("you have been logged in @\(Username)"), isActive: $showingLogInScreen) {
                         EmptyView()
