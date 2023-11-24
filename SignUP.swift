@@ -49,7 +49,7 @@ struct Signup: View {
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
-                    .border(.black, width: 2)
+                    .border(.black, width: 1.75)
                     .border(.red,width: CGFloat (wrongUsername))
                 
                 SecureField("Password", text: $Password)
@@ -57,7 +57,7 @@ struct Signup: View {
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
-                    .border(.black,width: 2)
+                    .border(.black,width: 1.75)
                     .border(.red,width: CGFloat (wrongPassword))
                 
                 TextField("Confirm Password", text: $confirmpassword)
@@ -65,30 +65,28 @@ struct Signup: View {
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
-                    .border(.black, width: 2)
+                    .border(.black, width: 1.75)
                     .border(.red,width: CGFloat (confirmPassword))
                 
-          
-        
-                
-                
-                
-                
-                
-             
-                
-                
+
                 Button("Register"){
-                    
-                    
-                        
-                    
                     
                 }
                 .foregroundColor(.white)
                 .frame(width: 300, height: 50)
                 .background(Color.blue)
                 .cornerRadius(10)
+                
+                NavigationLink{
+                    Login()
+                }label:{
+                    HStack(spacing: 3){
+                        Text("Already have an Account")
+                        Text("Sign in")
+                            .bold()
+                    }
+                    .font(.system(size: 20))
+                }
                 
             }
         }
