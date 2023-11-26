@@ -1,3 +1,4 @@
+
 //
 //  Signup.swift
 //  IA
@@ -12,9 +13,11 @@ struct Signup: View {
         @State private var Username = ""
         @State private var Password = ""
         @State private var confirmpassword = ""
+        @State private var emailAddress = ""
         @State private var wrongUsername = 0
         @State private var wrongPassword = 0
         @State private var confirmPassword = 0
+        @State private var confirmEmail = 0
         @State private var showingLogInScreen = false
         
         var body: some View {
@@ -33,16 +36,20 @@ struct Signup: View {
             
             VStack{
             
-                Image("Icon")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 120)
-                    .padding(.vertical,1)
-                
                 Text("Register")
                     .font(.largeTitle)
                     .bold()
                     .padding()
+                
+                TextField("Email Address", text: $emailAddress)
+                    .padding()
+                    .frame(width: 300, height: 50)
+                    .frame(width: 300, height: 50)
+                    .background(Color.white.opacity(0.75))
+                    .cornerRadius(10)
+                    .border(.black, width: 1.75)
+                    .border(.red,width: CGFloat (confirmEmail))
+                
                 
                 TextField("Username", text: $Username)
                     .padding()
@@ -60,7 +67,7 @@ struct Signup: View {
                     .border(.black,width: 1.75)
                     .border(.red,width: CGFloat (wrongPassword))
                 
-                TextField("Confirm Password", text: $confirmpassword)
+                SecureField("Confirm Password", text: $confirmpassword)
                     .padding()
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
