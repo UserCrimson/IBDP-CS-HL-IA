@@ -70,7 +70,6 @@ struct Login: View {
                     .cornerRadius(10)
                     
                     
-                    
                     // Current Work - RC 06 19
                     NavigationLink{
                         Signup()
@@ -90,8 +89,6 @@ struct Login: View {
                         EmptyView()
                     // Temp will be changed to a different page which will be the homepage after it has been developed
                     
-                        
-                        
                         // need to use a stackview for the sign up page then create a local database for the username and password - todo
             
                     }
@@ -122,14 +119,6 @@ struct Login: View {
     }
 
 
-  
-    
-    
-    
-    
-    
-    
-    
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
             Login()
