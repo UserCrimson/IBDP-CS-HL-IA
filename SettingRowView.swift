@@ -32,6 +32,6 @@ struct SettingRowView: View {
 
 struct SettingRowView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingRowView(imagename: "gear", title: "Version", tintColor: Color(.systemGray3))
+        SettingRowView(imagename: "gear", title: "Version", tintColor: Color(.systemGray))
     }
 }
