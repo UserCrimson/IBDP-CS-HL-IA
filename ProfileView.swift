@@ -13,7 +13,7 @@ struct ProfileView: View {
             // User info View
             Section{
                 HStack{
-                    Text("RC")
+                    Text(User.MOCK_USER.initails)
                         .font(.title)
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
@@ -22,28 +22,55 @@ struct ProfileView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 4){
-                        Text("Russell Christie")
+                        Text(User.MOCK_USER.fullname)
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .padding(.top, 4)
                         
-                        Text("RussChris@outlook.com")
+                        Text(User.MOCK_USER.email)
                             .font(.footnote)
-                            .accentColor(.gray)
+                            .foregroundColor(.gray)
                         
                     }
                     
-            
                 }
-               
                 
             }
             
             Section("General"){
-                
+                HStack{
+                    SettingRowView(
+                        imagename: "gear",
+                        title: "Version",
+                        tintColor: Color(.systemGray))
+                    
+                    Spacer()
+                    
+                    Text("1.0.0")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                     
+                }
             }
             
             Section("Account") {
+                Button{
+                    print("Sign Out")
+                } label:{
+                    SettingRowView(imagename: "arrow.left.circle.fill", title: "Sign Out", tintColor: .red)
+                }
+                
+                
+                Button{
+                    print("Delete Account")
+                } label:{
+                    SettingRowView(imagename: "xmark.circle.fill", title: "Delete Account", tintColor: .red)
+                }
+                
+                
+                
+                
+                
                 
             }
         }
@@ -55,4 +82,3 @@ struct ProfileView_Previews: PreviewProvider {
         ProfileView()
     }
 }
-
