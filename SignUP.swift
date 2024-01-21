@@ -10,16 +10,13 @@ import SwiftUI
 
 struct Signup: View {
   
-        @State private var Username = ""
+        @State private var Fullname = ""
         @State private var Password = ""
         @State private var confirmpassword = ""
-        @State private var emailAddress = ""
-        @State private var wrongUsername = 0
-        @State private var wrongPassword = 0
-        @State private var confirmPassword = 0
-        @State private var confirmEmail = 0
-        @State private var showingLogInScreen = false
-        
+        @State private var Email = ""
+        @Environment(\.dismiss) var dismiss
+        @EnvironmentObject var viewModel: AuthViewModel
+    
         var body: some View {
         
         ZStack{
@@ -35,82 +32,92 @@ struct Signup: View {
             
             
             VStack{
-            
+           
+                Spacer()
+                
                 Text("Register")
                     .font(.largeTitle)
                     .bold()
                     .padding()
                 
-                TextField("Email Address", text: $emailAddress)
+                TextField("Email Address", text: $Email)
                     .padding()
                     .frame(width: 300, height: 50)
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
-                    .border(.black, width: 1.75)
-                    .border(.red,width: CGFloat (confirmEmail))
+                    .border(.gray, width: 1.75)
+                   
                 
                 
-                TextField("Username", text: $Username)
+                TextField("Username", text: $Fullname)
                     .padding()
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
-                    .border(.black, width: 1.75)
-                    .border(.red,width: CGFloat (wrongUsername))
+                    .border(.gray, width: 1.75)
+             
                 
                 SecureField("Password", text: $Password)
                     .padding()
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
-                    .border(.black,width: 1.75)
-                    .border(.red,width: CGFloat (wrongPassword))
+                    .border(.gray,width: 1.75)
+                   
                 
                 SecureField("Confirm Password", text: $confirmpassword)
                     .padding()
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
-                    .border(.black, width: 1.75)
-                    .border(.red,width: CGFloat (confirmPassword))
+                    .border(.gray, width: 1.75)
+                   
                 
 
-                Button("Register"){
+                Button{
+                    Task{
+                        try await viewModel.createUser(withEmail: Email,
+                                                       password: Password,
+                                                       fullname: Fullname)
+                    }
                     
+                }label: {
+                    HStack{
+                        Text("Register")
+                            .fontWeight(.semibold)
+                        Image(systemName: "arrow.right")
+                    }
+                    .foregroundColor(.white)
+                    .frame(width: 300, height: 50)
+
                 }
-                .foregroundColor(.white)
-                .frame(width: 300, height: 50)
                 .background(Color.blue)
                 .cornerRadius(10)
+                .padding(.top, 24)
+                
+                Spacer()
                 
                 NavigationLink{
                     Login()
+                        .navigationBarBackButtonHidden(true)
                 }label:{
                     HStack(spacing: 3){
                         Text("Already have an Account")
+                            .foregroundColor(.black)
                         Text("Sign in")
                             .bold()
+                            .foregroundColor(.black)
+                            
                     }
                     .font(.system(size: 20))
+               
                 }
                 
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 struct Signup_Previews: PreviewProvider {
     static var previews: some View {
