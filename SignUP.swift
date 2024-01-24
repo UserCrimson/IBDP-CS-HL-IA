@@ -50,7 +50,7 @@ struct Signup: View {
                    
                 
                 
-                TextField("Username", text: $Fullname)
+                TextField("Fullname", text: $Fullname)
                     .padding()
                     .frame(width: 300, height: 50)
                     .background(Color.white.opacity(0.75))
