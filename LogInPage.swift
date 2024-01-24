@@ -60,6 +60,8 @@ struct Login: View {
                         .cornerRadius(10)
                       
                     
+                    // Sign in Button
+                    
                     Button{
                         Task {
                             try await viewModel.signIn(withEmail: Email, password: Password)
@@ -74,6 +76,7 @@ struct Login: View {
                         .frame(width: 300, height: 50)
                     }
                     .background(Color(.systemBlue))
+                    .opacity(formIsValid ? 1.0: 0.5  )
                     .cornerRadius(10)
                     .padding(.top, 24)
                     
@@ -105,8 +108,19 @@ struct Login: View {
                 .navigationBarHidden(true)
             }
         }
-
-
+ 
+extension Login: AuthenticationFormProtocol{
+    var formIsValid: Bool {
+        return !Email.isEmpty
+        && Email.contains("@")
+        && !Password.isEmpty
+        && Password.count > 5
+        
+        // Setting rules that the text fields must follow such as the email must contain the @ symbol and the password cannot be empty and must be greater than 5 characters
+    }
+    
+    
+}
 
 
 
