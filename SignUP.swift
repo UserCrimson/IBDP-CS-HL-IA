@@ -10,10 +10,10 @@ import SwiftUI
 
 struct Signup: View {
   
-        @State private var Fullname = ""
-        @State private var Password = ""
-        @State private var confirmpassword = ""
-        @State private var Email = ""
+        @State var Fullname = ""
+        @State var Password = ""
+        @State var confirmpassword = ""
+        @State var Email = ""
         @Environment(\.dismiss) var dismiss
         @EnvironmentObject var viewModel: AuthViewModel
     
@@ -64,14 +64,33 @@ struct Signup: View {
                     .background(Color.white.opacity(0.75))
                     .cornerRadius(10)
                     .border(.gray,width: 1.75)
+                
+                
+                ZStack(alignment: .trailing){
+                    SecureField("Confirm Password", text: $confirmpassword)
+                        .padding()
+                        .frame(width: 300, height: 50)
+                        .background(Color.white.opacity(0.75))
+                        .cornerRadius(10)
+                        .border(.gray, width: 1.75)
+                    
+                    if !Password.isEmpty && !confirmpassword.isEmpty{
+                        if Password == confirmpassword{
+                            Image(systemName: "checkmark.circle.fill")
+                                .imageScale(.large)
+                                .fontWeight(.bold)
+                                .foregroundColor(Color(.systemGreen))
+                        }else {
+                            Image(systemName: "xmark.circle.fill")
+                                .imageScale(.large)
+                                .fontWeight(.bold)
+                                .foregroundColor(Color(.systemRed))
+                        }
+                    }
+                       
+                }
                    
                 
-                SecureField("Confirm Password", text: $confirmpassword)
-                    .padding()
-                    .frame(width: 300, height: 50)
-                    .background(Color.white.opacity(0.75))
-                    .cornerRadius(10)
-                    .border(.gray, width: 1.75)
                    
                 
 
@@ -84,7 +103,7 @@ struct Signup: View {
                     
                 }label: {
                     HStack{
-                        Text("Register")
+                        Text("SIGN UP")
                             .fontWeight(.semibold)
                         Image(systemName: "arrow.right")
                     }
@@ -92,15 +111,15 @@ struct Signup: View {
                     .frame(width: 300, height: 50)
 
                 }
-                .background(Color.blue)
+                .background(Color(.systemBlue))
+                .opacity(formIsValid ? 1.0 : 0.5  )
                 .cornerRadius(10)
                 .padding(.top, 24)
                 
                 Spacer()
                 
-                NavigationLink{
-                    Login()
-                        .navigationBarBackButtonHidden(true)
+                Button{
+                    dismiss()
                 }label:{
                     HStack(spacing: 3){
                         Text("Already have an Account")
@@ -119,8 +138,23 @@ struct Signup: View {
     }
 }
 
-struct Signup_Previews: PreviewProvider {
-    static var previews: some View {
-        Signup()
+
+extension Signup: AuthenticationFormProtocol{
+    var formIsValid: Bool {
+        return !Email.isEmpty
+        && Email.contains("@")
+        && !Password.isEmpty
+        && Password.count > 5
+        && confirmpassword == Password
+        && !Fullname.isEmpty
+        
+        // Setting rules that the text fields must follow such as the email must contain the @ symbol and the password cannot be empty and must be greater than 5 characters
     }
 }
+    
+    struct Signup_Previews: PreviewProvider {
+        static var previews: some View {
+            Signup()
+        }
+    }
+
