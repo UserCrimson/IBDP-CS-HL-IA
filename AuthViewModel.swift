@@ -1,160 +1,80 @@
-
 //
-//  Signup.swift
-//  IA
+//  AuthViewModel.swift
+//  CS IA
 //
-//  Created by CHRISTIE, Russell on 24.11.23.
+//  Created by CHRISTIE, Russell on 18.01.24.
 //
 
-import SwiftUI
+import Foundation
+import Firebase
+import FirebaseFirestoreSwift
 
-struct Signup: View {
-  
-        @State var Fullname = ""
-        @State var Password = ""
-        @State var confirmpassword = ""
-        @State var Email = ""
-        @Environment(\.dismiss) var dismiss
-        @EnvironmentObject var viewModel: AuthViewModel
+// used to tell if the form is valid, and makes sure that login and singjup have to conform to this protocol
+
+protocol AuthenticationFormProtocol{
+    var formIsValid: Bool { get }
+}
+
+
+
+@MainActor
+class AuthViewModel: ObservableObject {
+    @Published var userSession: FirebaseAuth.User?
+    @Published var currentUser: User?
     
-        var body: some View {
+    init() {
+        self.userSession = Auth.auth().currentUser
         
-        ZStack{
-            Color
-                .blue.opacity(0.25)
-                .ignoresSafeArea()
-            Circle()
-                .scale(1.7)
-                .foregroundColor(.blue.opacity(0.15))
-            Circle()
-                .scale(1.3)
-                .foregroundColor(.white)
+        Task{
+            await fetchUser()
+        }
+        
+    }
+    
+    func signIn(withEmail email: String, password: String) async throws { // throws any errors
+        do{
+            let result = try await Auth.auth().signIn(withEmail: email, password: password)
+            self.userSession = result.user
+            await fetchUser()//fetches the profile view with the user id, must be used after signing in so the uid can be fetched
+        }catch{
+            print("DEBUG: Failed to log in with error\(error.localizedDescription)")
             
-            
-            VStack{
-           
-                Spacer()
-                
-                Text("Register")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding()
-                
-                TextField("Email Address", text: $Email)
-                    .padding()
-                    .frame(width: 300, height: 50)
-                    .frame(width: 300, height: 50)
-                    .background(Color.white.opacity(0.75))
-                    .cornerRadius(10)
-                    .border(.gray, width: 1.75)
-                   
-                
-                
-                TextField("Username", text: $Fullname)
-                    .padding()
-                    .frame(width: 300, height: 50)
-                    .background(Color.white.opacity(0.75))
-                    .cornerRadius(10)
-                    .border(.gray, width: 1.75)
-             
-                
-                SecureField("Password", text: $Password)
-                    .padding()
-                    .frame(width: 300, height: 50)
-                    .background(Color.white.opacity(0.75))
-                    .cornerRadius(10)
-                    .border(.gray,width: 1.75)
-                
-                
-                ZStack(alignment: .trailing){
-                    SecureField("Confirm Password", text: $confirmpassword)
-                        .padding()
-                        .frame(width: 300, height: 50)
-                        .background(Color.white.opacity(0.75))
-                        .cornerRadius(10)
-                        .border(.gray, width: 1.75)
-                    
-                    if !Password.isEmpty && !confirmpassword.isEmpty{
-                        if Password == confirmpassword{
-                            Image(systemName: "checkmark.circle.fill")
-                                .imageScale(.large)
-                                .fontWeight(.bold)
-                                .foregroundColor(Color(.systemGreen))
-                        }else {
-                            Image(systemName: "xmark.circle.fill")
-                                .imageScale(.large)
-                                .fontWeight(.bold)
-                                .foregroundColor(Color(.systemRed))
-                        }
-                    }
-                       
-                }
-                   
-                
-                   
-                
-
-                Button{
-                    Task{
-                        try await viewModel.createUser(withEmail: Email,
-                                                       password: Password,
-                                                       fullname: Fullname)
-                    }
-                    
-                }label: {
-                    HStack{
-                        Text("SIGN UP")
-                            .fontWeight(.semibold)
-                        Image(systemName: "arrow.right")
-                    }
-                    .foregroundColor(.white)
-                    .frame(width: 300, height: 50)
-
-                }
-                .background(Color(.systemBlue))
-                .opacity(formIsValid ? 1.0 : 0.5  )
-                .cornerRadius(10)
-                .padding(.top, 24)
-                
-                Spacer()
-                
-                Button{
-                    dismiss()
-                }label:{
-                    HStack(spacing: 3){
-                        Text("Already have an Account")
-                            .foregroundColor(.black)
-                        Text("Sign in")
-                            .bold()
-                            .foregroundColor(.black)
-                            
-                    }
-                    .font(.system(size: 20))
-               
-                }
-                
+        }
             }
+    func createUser(withEmail email: String, password: String,fullname: String ) async throws{
+        do{
+            let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            self.userSession = result.user
+            let user = User(id: result.user.uid, fullname: fullname, email: email) // creating user Id and uploading it to firestore
+            let encodedUser = try Firestore.Encoder().encode(user)
+            try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
+            await fetchUser() // fetches data we just uploaded
+        }catch{
+            print("DEBUG: Failed to create user with error\(error.localizedDescription)") // used to catch any error and output the error when
         }
-    }
-}
-
-
-extension Signup: AuthenticationFormProtocol{
-    var formIsValid: Bool {
-        return !Email.isEmpty
-        && Email.contains("@")
-        && !Password.isEmpty
-        && Password.count > 5
-        && confirmpassword == Password
-        && !Fullname.isEmpty
         
-        // Setting rules that the text fields must follow such as the email must contain the @ symbol and the password cannot be empty and must be greater than 5 characters
     }
-}
     
-    struct Signup_Previews: PreviewProvider {
-        static var previews: some View {
-            Signup()
+    func signOut(){
+        do{
+            try Auth.auth().signOut() // sings out user on the back end / firebase
+            self.userSession = nil // takes you back to the login screen by setting the user session = 0
+            self.currentUser = nil // reset the current user model
+            
+        }catch{
+            print("DEBUG: failed to sing out with error\(error.localizedDescription)")
         }
     }
+    
+    func deleteAccount(){
+        
+    }
+    
+    func fetchUser() async {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else {return}
+        self.currentUser = try? snapshot.data(as: User.self)
+        
+    }
+}
 
