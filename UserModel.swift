@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct User: Identifiable, Codable {
+
+struct User: Identifiable, Codable { // takes raw json data and maps into data objects - decoding
     let id: String
     let fullname: String
     let email: String
@@ -29,4 +30,3 @@ extension User {
     
     
 }
-
