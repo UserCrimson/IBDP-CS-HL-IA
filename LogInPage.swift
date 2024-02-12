@@ -5,9 +5,6 @@
 //
 //  Created by CHRISTIE, Russell on 21.11.23.
 //
-//
-//
-//
 //  ContentView.swift
 //  IA Project
 //
@@ -54,6 +51,7 @@ struct Login: View {
                         .background(Color.white.opacity(0.75))
                         .cornerRadius(10)
                     SecureField("Password", text: $Password)
+                    // Secure field allows for privacy whiel typing the passwords
                         .padding()
                         .frame(width: 300, height: 50)
                         .background(Color.white.opacity(0.75))
@@ -82,8 +80,8 @@ struct Login: View {
                     
                     Spacer()
                         
-                        // Current Work - RC 06 19
-                    
+                        
+                    // Register Page
                     NavigationLink{
                         Signup()
                             .navigationBarBackButtonHidden(true)
@@ -96,11 +94,6 @@ struct Login: View {
                         .font(.system(size: 14))
                     }
                         
-                        
-                            
-        
-                            
-                            
                             
                         }
                     }
